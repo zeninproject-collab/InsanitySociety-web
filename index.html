@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#000000"/>
+  <title>Insanity Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Oswald:wght@400;500;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+    
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <h1 class="logo">INSANITY SOCIETY</h1>
+    <ul class="nav-links">
+      <li><button class="tab-link active" data-tab="home">Inicio</button></li>
+      <li><button class="tab-link" data-tab="colecciones">Colecciones</button></li>
+      <li><button class="tab-link" data-tab="sociedad">La Sociedad</button></li>
+      <li><button class="tab-link" data-tab="tienda">Tienda</button></li>
+      <li><button class="tab-link" data-tab="blog">Comunidad</button></li>
+      <li>
+        <button id="toggleCarrito" class="btn-carrito">
+          🛒 Carrito <span id="contadorCarrito" class="contador hidden">0</span>
+        </button>
+      </li>
+    </ul>
+    <div class="mobile-actions" aria-label="Acciones móviles">
+      <button id="mobileMenuToggle" class="icon-btn" aria-label="Abrir menú">⋮</button>
+      <button id="toggleCarritoMobile" class="icon-btn" aria-label="Abrir carrito">🛒</button>
+    </div>
+    <div id="mobileMenu" class="mobile-menu hidden" role="menu" aria-hidden="true">
+      <button class="mobile-menu-link" data-tab="home">Inicio</button>
+      <button class="mobile-menu-link" data-tab="colecciones">Colecciones</button>
+      <button class="mobile-menu-link" data-tab="sociedad">La Sociedad</button>
+      <button class="mobile-menu-link" data-tab="tienda">Tienda</button>
+      <button class="mobile-menu-link" data-tab="blog">Comunidad</button>
+      <hr/>
+      <button id="mobileOpenCarrito" class="mobile-menu-link">Abrir carrito</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home" class="tab-content active">
+    <div class="hero hero-dark">
+      <video class="hero-video" autoplay muted loop playsinline poster="img/hero-poster.jpg">
+        <source src="https://videos.pexels.com/video-files/5661640/5661640-uhd_2560_1440_25fps.mp4" type="video/mp4">
+      </video>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h2>NO ES SOLO ROPA. ES UN MANIFIESTO.</h2>
+        <p>Fuerza. Disciplina. Dolor y gloria. Esto es para quienes desafían sus límites.</p>
+        <div class="hero-ctas">
+          <button class="btn-primario tab-link" data-tab="colecciones">Explorar Colecciones</button>
+          <button class="btn-secundario tab-link" data-tab="tienda">Entrar a la Tienda</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LA SOCIEDAD / SOBRE NOSOTROS -->
+  <section id="sociedad" class="tab-content">
+    <h2>La Sociedad</h2>
+    <div class="section-intro">
+      <p>
+        Insanity Society no es una marca de ropa común: es una comunidad, un manifiesto y un estilo de vida. 
+        La marca nace en el gimnasio, entre hierro, sudor y dolor, pero su significado trasciende: representa a quienes 
+        usan el entrenamiento como un camino de transformación mental y física.
+      </p>
+    </div>
+
+    <div class="sociedad-grid">
+      <article class="soc-card">
+        <h3>Lo que representa la marca</h3>
+        <ul>
+          <li><strong>Fuerza mental y física:</strong> Cada prenda recuerda que entrenar no es solo estética, es disciplina, sacrificio y carácter.</li>
+          <li><strong>Oscuridad + resiliencia:</strong> Estilo visual crudo, fuerte y oscuro. Transmite intensidad, fuerza, dolor y gloria.</li>
+          <li><strong>Rebeldía con propósito:</strong> No buscamos encajar en lo común; es para quienes desafían sus límites y viven bajo sus propias reglas.</li>
+          <li><strong>Identidad de guerreros:</strong> El cliente no compra ropa, compra un símbolo de lo que es y lo que quiere llegar a ser.</li>
+        </ul>
+      </article>
+      <article class="soc-card manifesto">
+        <h3>Manifiesto</h3>
+        <p>
+          Entrenamos en la oscuridad para conquistar la luz. El hierro no miente; nos forja. El dolor nos afila. 
+          Aquí no se venden prendas: se forjan símbolos. Si eliges la comodidad, no es tu lugar. Si eliges el combate, bienvenido a la Sociedad.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- COLECCIONES: HISTORIA Y PILARES -->
+  <section id="colecciones" class="tab-content">
+    <h2>Colecciones</h2>
+    <div class="section-intro">
+      <p>
+        No son simples diseños. Cada colección cuenta una historia y rinde tributo a valores inquebrantables. 
+        Desde espíritus de tormenta hasta pilares que forjan la mente: esto es la esencia detrás de cada pieza.
+      </p>
+    </div>
+
+    <div class="colecciones-grid">
+      <article class="col-card col-story raijin">
+        <h3>Raijin</h3>
+        <p>Inspirada en la tormenta. Poder. Choque. Ritmo implacable. Para quienes cargan el trueno en cada repetición.</p>
+      </article>
+      <article class="col-card col-pilar conqueror">
+        <h3>Conqueror</h3>
+        <p>Vencer al yo débil. La batalla diaria contra la excusa. Gana territorio en tu mente, conquista el hierro.</p>
+      </article>
+      <article class="col-card col-pilar discipline">
+        <h3>Discipline</h3>
+        <p>Lo haces aunque no tengas ganas. Rutina, enfoque, precisión. La consistencia vence al talento.</p>
+      </article>
+      <article class="col-card col-pilar focus">
+        <h3>Focus</h3>
+        <p>Mirada fija, respiración pesada, manos en el acero. Cero ruido. Solo objetivo.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- TIENDA: PRODUCTOS -->
+  <section id="tienda" class="tab-content">
+    <h2>Tienda</h2>
+    <div class="section-intro">
+      <p>Minimalista, agresiva y funcional. Fotografías oscuras, detalles metálicos, actitud sin concesiones.</p>
+    </div>
+    <div class="productos">
+      <div class="card">
+        <img src="img/camiseta1.jpg" alt="Camiseta Oversize Negra">
+        <h3>Camiseta Oversize Negra</h3>
+        <p>Material: algodón premium • Tallas: S-XL</p>
+        <p class="precio">$80.000</p>
+        <button class="agregar-carrito" data-nombre="Camiseta Oversize Negra" data-precio="80000" data-tallas="S,M,L,XL" data-coleccion="Oversize">
+          Agregar al carrito
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="img/sudadera1.jpg" alt="Sudadera Negra con Logo">
+        <h3>Sudadera Negra con Logo</h3>
+        <p>Material: poliéster + algodón • Tallas: M-XL</p>
+        <p class="precio">$120.000</p>
+        <button class="agregar-carrito" data-nombre="Sudadera Negra con Logo" data-precio="120000" data-tallas="M,L,XL" data-coleccion="Logo">
+          Agregar al carrito
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG / COMUNIDAD -->
+  <section id="blog" class="tab-content">
+    <h2>Comunidad</h2>
+    <div class="blog-grid">
+      <article class="blog-card">
+        <h3>Historias de la Sociedad</h3>
+        <p>Testimonios reales: transformación a base de hierro y constancia. Dolor, caída, levantarse, repetir.</p>
+      </article>
+      <article class="blog-card">
+        <h3>Rutina: Fuerza Base</h3>
+        <p>Sentadilla, peso muerto, press. 5x5. Progresión lineal. Registra, come, duerme, repite.</p>
+      </article>
+      <article class="blog-card">
+        <h3>Manifiesto corto: Dolor y Gloria</h3>
+        <p>El dolor es el peaje. La gloria es llegar. La Sociedad no busca aplausos: busca victorias silenciosas.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- PANEL LATERAL DEL CARRITO -->
+  <aside id="carrito" class="carrito">
+    <div class="carrito-header">
+      <h2>🛒 Tu Carrito</h2>
+      <button id="cerrarCarrito">✖</button>
+    </div>
+    <ul id="lista-carrito"></ul>
+    <p>Total: <span id="total">$0</span></p>
+    <button id="realizarPedido" class="btn-pedido" disabled>Resumen de pedido</button>
+  </aside>
+
+  
+  <!-- Modal de Pedido -->
+  <div id="pedidoModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Resumen del Pedido</h3>
+        <button id="cerrarPedidoModal" aria-label="Cerrar">✖</button>
+      </div>
+      <div id="pedidoDetalle" class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="confirmarPedido" class="btn-primario">Realizar pedido</button>
+        <button id="cerrarPedido" class="btn-secundario">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Checkout: Datos y Confirmación -->
+  <div id="checkoutModal" class="modal-overlay hidden" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitulo">
+      <div class="modal-header">
+        <h3 id="checkoutTitulo">Datos de envío y confirmación</h3>
+        <button id="cerrarCheckoutModal" aria-label="Cerrar">✖</button>
+      </div>
+      <div class="modal-body">
+        <div id="checkoutResumen" style="margin-bottom: 0.75rem;"></div>
+        <p id="checkoutTotal" style="font-weight: 700; margin-bottom: 0.75rem;">Total: $0</p>
+
+        <form id="checkoutForm" novalidate>
+          <div class="form-row">
+            <label for="nombreApellido">Nombre y Apellido</label>
+            <input type="text" id="nombreApellido" name="nombreApellido" placeholder="Tu nombre y apellido" required />
+          </div>
+
+          <div class="form-row">
+            <label for="cedula">Cédula de ciudadanía</label>
+            <input type="text" id="cedula" name="cedula" placeholder="Número de cédula" inputmode="numeric" required />
+          </div>
+
+          <div class="form-row">
+            <label for="departamento">Departamento</label>
+            <select id="departamento" name="departamento" required>
+              <option value="" selected disabled>Seleccione un departamento</option>
+              <!-- Colombia: departamentos -->
+              <option>Amazonas</option>
+              <option>Antioquia</option>
+              <option>Arauca</option>
+              <option>Atlántico</option>
+              <option>Bolívar</option>
+              <option>Boyacá</option>
+              <option>Caldas</option>
+              <option>Caquetá</option>
+              <option>Casanare</option>
+              <option>Cauca</option>
+              <option>Cesar</option>
+              <option>Chocó</option>
+              <option>C��rdoba</option>
+              <option>Cundinamarca</option>
+              <option>Guainía</option>
+              <option>Guaviare</option>
+              <option>Huila</option>
+              <option>La Guajira</option>
+              <option>Magdalena</option>
+              <option>Meta</option>
+              <option>Nariño</option>
+              <option>Norte de Santander</option>
+              <option>Putumayo</option>
+              <option>Quindío</option>
+              <option>Risaralda</option>
+              <option>San Andrés y Providencia</option>
+              <option>Santander</option>
+              <option>Sucre</option>
+              <option>Tolima</option>
+              <option>Valle del Cauca</option>
+              <option>Vaupés</option>
+              <option>Vichada</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="ciudad">Ciudad</label>
+            <select id="ciudad" name="ciudad" required>
+              <option value="" selected disabled>Seleccione primero un departamento</option>
+            </select>
+            <input type="text" id="ciudadOtra" name="ciudadOtra" class="hidden" placeholder="Especifique la ciudad" />
+          </div>
+
+          <div class="form-row">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion" placeholder="Calle # Número - Barrio" required />
+          </div>
+
+          <div class="form-row">
+            <label for="barrio">Barrio</label>
+            <input type="text" id="barrio" name="barrio" placeholder="Nombre del barrio" required />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="enviarWhatsapp" class="btn-primario" disabled>Confirmar pedido</button>
+        <button id="cerrarCheckout" class="btn-secundario">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>
