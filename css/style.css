@@ -38,7 +38,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
-  padding-top: 70px; /* espacio para la navbar fija */
+  padding-top: var(--header-offset, 70px); /* compensación dinámica del header */
   min-height: 100svh; /* Altura mínima igual al alto de la pantalla con viewport seguro */
   background-image:
     radial-gradient(1600px 400px at 10% -10%, rgba(229,9,20,0.06), transparent 40%),
@@ -192,6 +192,9 @@ h1, h2, h3 {
   font-size: 1.25rem;
   -webkit-text-stroke: 1px #000;
 }
+
+/* Ajustes para evitar solapamiento del header fijo */
+.tab-content { scroll-margin-top: 80px; }
 
 /* ---------------------------
    HOME (HERO OSCURO)
@@ -535,41 +538,32 @@ h1, h2, h3 {
 
 /* Pantallas hasta 768px (tablets y móviles grandes) */
 @media (max-width: 768px) {
-  body { padding-top: 110px; }
+  /* Reducir ligeramente el logo en móvil */
+  .logo { font-size: 1.6rem; -webkit-text-stroke: 1.5px #000; }
 
-  .navbar { flex-direction: column; align-items: center; gap: 0.5rem; }
-  .logo { width: 100%; text-align: center; }
+  /* Header en columna y menú limpio */
+  .navbar { flex-direction: column; align-items: center; gap: 0.35rem; }
+  .nav-links { display: none; }
+  .mobile-actions { display: flex; margin-left: 0; }
 
-  .nav-links {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-top: 0.25rem;
-    overflow-x: visible;
-    white-space: normal;
-    scrollbar-width: none; /* Firefox */
-  }
-  .nav-links::-webkit-scrollbar { display: none; }
+  /* Compensación del header fijo (se actualizará también por JS via --header-offset) */
+  body { padding-top: var(--header-offset, 110px); }
 
-  .btn-carrito { display: inline-block; }
-
-  /* Estado compacto al hacer scroll: ocultar tabs y mostrar iconos */
-  .navbar.shrink { flex-direction: row; align-items: center; }
-  .navbar.shrink .logo { margin-right: auto; text-align: left; }
-  .navbar.shrink .nav-links { display: none; }
-  .navbar.shrink .mobile-actions { display: flex; margin-left: auto; }
-  .navbar.shrink .btn-carrito { display: none; }
-
-  .mobile-menu { top: 56px; }
+  /* Menú móvil desplegable posicionado bajo el header */
+  .mobile-menu { top: 56px; width: calc(100% - 16px); right: 8px; }
 
   .hero h2 { font-size: 1.8rem; }
   .hero p { font-size: 1rem; }
 
   .productos { grid-template-columns: 1fr 1fr; }
 
+  /* Carrito: pantalla completa en móvil */
   .carrito { width: 100%; right: -100%; }
   .carrito.active { right: 0; }
+}
+
+@media (max-width: 480px) {
+  .logo { font-size: 1.45rem; -webkit-text-stroke: 1.2px #000; }
 }
 
 /* Pantallas pequeñas (teléfonos hasta 480px) */

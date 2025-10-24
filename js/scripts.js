@@ -18,6 +18,7 @@ const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
 
 // Navbar
 const navbar = document.querySelector('.navbar');
+const root = document.documentElement;
 
 // Estado para anclar el carrito al hacer click
 let carritoFijado = false;
@@ -202,6 +203,8 @@ function configurarCarritoPorDispositivo() {
       carritoPanel.classList.add("active");
       carritoPanel.classList.remove("hover-open");
       cerrarMobileMenu();
+      // Evitar scroll del body cuando carrito está abierto en móvil
+      document.body.style.overflow = 'hidden';
     };
     if (toggleCarritoMobile) toggleCarritoMobile.addEventListener("click", abrirCarritoMovil);
     if (mobileOpenCarrito) mobileOpenCarrito.addEventListener("click", abrirCarritoMovil);
@@ -213,6 +216,8 @@ configurarCarritoPorDispositivo();
 cerrarCarrito.addEventListener("click", () => {
   carritoFijado = false;
   carritoPanel.classList.remove("active", "hover-open");
+  // Restaurar scroll del body
+  document.body.style.overflow = '';
 });
 
 // ----------------------------
@@ -224,6 +229,17 @@ function onScrollMobileNavbar() {
   navbar.classList.toggle('shrink', scrolled);
 }
 window.addEventListener('scroll', onScrollMobileNavbar, { passive: true });
+
+// Ajustar padding-top dinámico según altura de la navbar en móvil
+function updateHeaderOffset() {
+  if (!navbar) return;
+  const h = navbar.getBoundingClientRect().height;
+  root.style.setProperty('--header-offset', `${Math.ceil(h) + 8}px`);
+}
+window.addEventListener('load', updateHeaderOffset);
+window.addEventListener('resize', updateHeaderOffset);
+const ro = new ResizeObserver(updateHeaderOffset);
+if (navbar && ro) ro.observe(navbar);
 
 function cerrarMobileMenu() {
   if (!mobileMenu) return;
