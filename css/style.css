@@ -16,6 +16,15 @@
 /* ---------------------------
    GENERALES
 ---------------------------- */
+/* Fuente personalizada para el logo */
+@font-face {
+  font-family: 'AndroidAssassin';
+  src: url('../fonts/Android Assassin.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -60,7 +69,7 @@ h1, h2, h3 {
 }
 
 .logo {
-  font-family: "Black Ops One", system-ui, sans-serif;
+  font-family: 'AndroidAssassin', "Black Ops One", system-ui, sans-serif;
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: 3px;
