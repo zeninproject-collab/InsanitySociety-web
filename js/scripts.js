@@ -65,11 +65,17 @@ function actualizarCarrito() {
 
   carrito.forEach(item => {
     const li = document.createElement("li");
-    const etiquetaTalla = item.talla ? ` <small>(Talla: ${item.talla})</small>` : "";
+    const tallaTxt = item.talla ? `Talla: ${item.talla}` : 'Talla: N/A';
+    const qty = item.cantidad;
+    const unit = formatearDinero(item.precio);
+    const subtotal = formatearDinero(item.precio * qty);
     li.innerHTML = `
-      ${item.nombre}${etiquetaTalla} x${item.cantidad}
-      <span>${formatearDinero(item.precio * item.cantidad)}</span>
-      <button class="eliminar">X</button>
+      <div style="display:flex; flex-direction:column; gap:2px; max-width: 100%;">
+        <strong>${item.nombre}</strong>
+        <small style="color:#bbb;">${tallaTxt} · Cant: x${qty} · Unit: ${unit}</small>
+      </div>
+      <span style="margin-left:auto; font-weight:700; color: var(--accent);">${subtotal}</span>
+      <button class="eliminar" title="Quitar">X</button>
     `;
 
     li.querySelector(".eliminar").addEventListener("click", () => {
@@ -251,21 +257,36 @@ function toggleMobileMenu() {
   const opened = mobileMenu.classList.toggle('hidden');
   mobileMenu.setAttribute('aria-hidden', opened ? 'true' : 'false');
 }
-if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleMobileMenu();
+});
+if (mobileMenu) {
+  mobileMenu.addEventListener('click', (e) => e.stopPropagation());
+}
 if (mobileMenuLinks && mobileMenuLinks.length) {
-  mobileMenuLinks.forEach(btn => btn.addEventListener('click', () => {
-    // activar tab
+  mobileMenuLinks.forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
     const tabId = btn.dataset.tab;
     if (tabId) {
       document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
       activarTabConAnimacion(tabId);
-      // marcar activo el tab-link correspondiente en desktop
       const desktopBtn = document.querySelector(`.tab-link[data-tab="${tabId}"]`);
       if (desktopBtn) desktopBtn.classList.add('active');
     }
     cerrarMobileMenu();
   }));
 }
+// Cerrar menú al hacer click/tap fuera
+window.addEventListener('click', (e) => {
+  const target = e.target;
+  const clickedToggle = mobileMenuToggle && mobileMenuToggle.contains(target);
+  const clickedMenu = mobileMenu && mobileMenu.contains(target);
+  const clickedCartButtons = (toggleCarritoMobile && toggleCarritoMobile.contains(target)) || (mobileOpenCarrito && mobileOpenCarrito.contains(target));
+  if (!clickedToggle && !clickedMenu && !clickedCartButtons) {
+    cerrarMobileMenu();
+  }
+}, { passive: true });
 
 // ----------------------------
 // REALIZAR PEDIDO (modal resumen)
