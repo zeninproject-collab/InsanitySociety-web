@@ -53,6 +53,32 @@ h1, h2, h3 {
 }
 
 /* ---------------------------
+   RAIJIN DESTACADO / PÁGINA
+---------------------------- */
+.raijin-highlight {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  background: linear-gradient(160deg, #111, #0b0b0b);
+  border: 1px solid #232323;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+.raijin-banner { background: #000 url('../img/raijin-banner.jpg') center/cover no-repeat; min-height: 220px; }
+.raijin-content { padding: 1rem; }
+.raijin-content h3 { color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+.raijin-sinopsis { color: var(--muted); margin: .5rem 0 1rem; }
+.raijin-btn { display: inline-block; text-decoration: none; }
+.raijin-btn:hover { filter: brightness(1.05); box-shadow: 0 6px 14px rgba(229,9,20,0.35); }
+
+@media (max-width: 768px) {
+  .raijin-highlight { grid-template-columns: 1fr; }
+}
+
+/* ---------------------------
    NAVBAR
 ---------------------------- */
 .navbar {
