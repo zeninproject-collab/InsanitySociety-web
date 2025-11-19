@@ -1,7 +1,7 @@
 // ----------------------------
 // SELECCIÓN DE ELEMENTOS
 // ----------------------------
-const botonesAgregar = document.querySelectorAll(".agregar-carrito");
+let botonesAgregar = document.querySelectorAll(".agregar-carrito");
 const listaCarrito = document.querySelector("#lista-carrito");
 const totalCarrito = document.querySelector("#total");
 const contadorCarrito = document.querySelector("#contadorCarrito");
@@ -35,14 +35,14 @@ const formatearDinero = (valor) => {
 // ----------------------------
 // FUNCIÓN: AGREGAR PRODUCTO
 // ----------------------------
-function agregarProducto(nombre, precio, talla = null, coleccion = null) {
-  const key = `${nombre}__${talla ?? "SN"}`;
+function agregarProducto(nombre, precio, talla = null, coleccion = null, color = null) {
+  const key = `${nombre}__${color ?? 'SC'}__${talla ?? "SN"}`;
   const existente = carrito.find(item => item.key === key);
 
   if (existente) {
     existente.cantidad++;
   } else {
-    carrito.push({ key, nombre, precio, talla, coleccion, cantidad: 1 });
+    carrito.push({ key, nombre, precio, talla, coleccion, color, cantidad: 1 });
   }
   actualizarCarrito();
 }
@@ -69,10 +69,11 @@ function actualizarCarrito() {
     const qty = item.cantidad;
     const unit = formatearDinero(item.precio);
     const subtotal = formatearDinero(item.precio * qty);
+    const colorTxt = item.color ? ` · Color: ${item.color}` : '';
     li.innerHTML = `
       <div style="display:flex; flex-direction:column; gap:2px; max-width: 100%;">
         <strong>${item.nombre}</strong>
-        <small style="color:#bbb;">${tallaTxt} · Cant: x${qty} · Unit: ${unit}</small>
+        <small style="color:#bbb;">${tallaTxt}${colorTxt} · Cant: x${qty} · Unit: ${unit}</small>
       </div>
       <span style="margin-left:auto; font-weight:700; color: var(--accent);">${subtotal}</span>
       <button class="eliminar" title="Quitar">X</button>
@@ -111,43 +112,97 @@ function crearSelectorTallas(boton) {
   if (boton.nextElementSibling && boton.nextElementSibling.classList.contains("tallas-menu")) return;
 
   const tallas = (boton.dataset.tallas || "").split(",").map(t => t.trim()).filter(Boolean);
-  if (!tallas.length) {
-    // Si no hay tallas definidas, agregar directo al carrito
-    const nombre = boton.dataset.nombre;
-    const precio = parseFloat(boton.dataset.precio);
-    const coleccion = boton.dataset.coleccion || null;
-    agregarProducto(nombre, precio, null, coleccion);
+
+  // Detectar si el producto tiene variación de color por la UI (color-toggle presente)
+  const card = boton.closest('.card.producto');
+  const colorBtns = card ? card.querySelectorAll('.color-btn') : null;
+  const tieneColor = colorBtns && colorBtns.length > 0;
+
+  const nombre = boton.dataset.nombre;
+  const precio = parseFloat(boton.dataset.precio);
+  const coleccion = boton.dataset.coleccion || null;
+
+  // Si no hay tallas y no hay color, agregar directo
+  if (!tallas.length && !tieneColor) {
+    agregarProducto(nombre, precio, null, coleccion, null);
     return;
   }
 
-  // Ocultar botón y mostrar opciones
+  // Ocultar botón y construir selector(es)
   boton.style.display = "none";
   const contenedor = document.createElement("div");
   contenedor.className = "tallas-menu";
 
-  const label = document.createElement("p");
-  label.textContent = "Elige tu talla:";
-  contenedor.appendChild(label);
+  let colorSeleccionado = null;
 
-  tallas.forEach(talla => {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "talla-opcion";
-    chip.textContent = talla;
-    chip.addEventListener("click", () => {
-      // Al seleccionar talla, se quita el menú y reaparece botón
-      contenedor.remove();
-      boton.style.display = "inline-block";
-      boton.textContent = "Agregar al carrito";
-      agregarProducto(
-        boton.dataset.nombre,
-        parseFloat(boton.dataset.precio),
-        talla,
-        boton.dataset.coleccion || null
-      );
+  // Bloque de color si aplica
+  if (tieneColor) {
+    const labelColor = document.createElement('p');
+    labelColor.textContent = 'Elige color:';
+    contenedor.appendChild(labelColor);
+
+    colorBtns.forEach(btn => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'talla-opcion';
+      chip.textContent = btn.dataset.color.charAt(0).toUpperCase() + btn.dataset.color.slice(1);
+      chip.addEventListener('click', () => {
+        colorSeleccionado = btn.dataset.color; // 'blanco' | 'negro'
+        // Reflejar visualmente selección de color en tarjeta
+        card.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // Cambiar imagen acorde al color manteniendo vista actual
+        const media = card.querySelector('.product-media');
+        const img = card.querySelector('.product-img');
+        const viewBtnActivo = card.querySelector('.view-btn.active');
+        const view = viewBtnActivo ? viewBtnActivo.dataset.view : 'front';
+        const key = `${view}-${colorSeleccionado}`;
+        const src = media.dataset[key];
+        if (src) img.src = src;
+      });
+      contenedor.appendChild(chip);
     });
-    contenedor.appendChild(chip);
-  });
+  }
+
+  // Bloque de tallas si aplica
+  if (tallas.length) {
+    const label = document.createElement("p");
+    label.textContent = "Elige tu talla:";
+    contenedor.appendChild(label);
+
+    tallas.forEach(talla => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "talla-opcion";
+      chip.textContent = talla;
+      chip.addEventListener("click", () => {
+        // Validar color requerido si aplica
+        if (tieneColor && !colorSeleccionado) {
+          // Auto-seleccionar el color activo en la tarjeta si existe
+          const activo = card.querySelector('.color-btn.active');
+          colorSeleccionado = activo ? activo.dataset.color : null;
+          if (!colorSeleccionado) return; // obliga a elegir color primero
+        }
+        // Al seleccionar talla, agregar al carrito y cerrar menú
+        contenedor.remove();
+        boton.style.display = "inline-block";
+        boton.textContent = "Agregar al carrito";
+
+        const nombreConColor = (tieneColor && colorSeleccionado)
+          ? `${nombre} (${colorSeleccionado.charAt(0).toUpperCase() + colorSeleccionado.slice(1)})`
+          : nombre;
+
+        agregarProducto(
+          nombreConColor,
+          precio,
+          talla,
+          coleccion,
+          tieneColor ? colorSeleccionado : null
+        );
+      });
+      contenedor.appendChild(chip);
+    });
+  }
 
   // Botón para cancelar selección
   const cancelar = document.createElement("button");
@@ -591,6 +646,8 @@ function activarTabConAnimacion(id) {
   setTimeout(() => {
     if (actual) actual.classList.remove("fade-out");
     siguiente.classList.add("active", "fade-in");
+    // Re-vincular listeners de tallas y vista/color tras cambiar de pestaña
+    inicializarInteraccionesCatalogo();
   }, 250);
 }
 
@@ -601,3 +658,74 @@ tabLinks.forEach(link => {
     activarTabConAnimacion(link.dataset.tab);
   });
 });
+
+// ----------------------------
+// PREVISUALIZACIÓN DE PRODUCTO: Vista pecho/espalda y color
+// ----------------------------
+function inicializarInteraccionesCatalogo() {
+  // Botones agregar (recolectar de nuevo por si se cargaron nuevos nodos)
+  botonesAgregar = document.querySelectorAll('.agregar-carrito');
+  botonesAgregar.forEach(boton => {
+    if (!boton.__tallasBinded) {
+      boton.addEventListener('click', (e) => crearSelectorTallas(e.currentTarget));
+      boton.__tallasBinded = true;
+    }
+  });
+
+  // Vista pecho/espalda
+  document.querySelectorAll('.producto .view-btn').forEach(btn => {
+    if (btn.__viewBinded) return;
+    btn.addEventListener('click', () => {
+      const cont = btn.closest('.producto');
+      const media = cont.querySelector('.product-media');
+      const img = cont.querySelector('.product-img');
+      const view = btn.dataset.view; // 'front' | 'back'
+
+      // Alternar estado visual
+      cont.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Soporte para productos con colores (dragon)
+      const colorActivoBtn = cont.querySelector('.color-btn.active');
+      const color = colorActivoBtn ? colorActivoBtn.dataset.color : null; // 'blanco' | 'negro'
+
+      let src = '';
+      if (color && media.dataset[`front-${color}`]) {
+        // Producto con colores
+        const key = `${view}-${color}`; // ej: front-blanco
+        src = media.dataset[key];
+      } else {
+        // Producto sin colores
+        src = media.dataset[view === 'front' ? 'front' : 'back'];
+      }
+      if (src) img.src = src;
+    });
+    btn.__viewBinded = true;
+  });
+
+  // Selector de color (solo Dragon)
+  document.querySelectorAll('.producto .color-btn').forEach(btn => {
+    if (btn.__colorBinded) return;
+    btn.addEventListener('click', () => {
+      const cont = btn.closest('.producto');
+      const media = cont.querySelector('.product-media');
+      const img = cont.querySelector('.product-img');
+      const color = btn.dataset.color; // 'blanco' | 'negro'
+
+      cont.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Mantener vista actual (pecho/espalda)
+      const viewBtnActivo = cont.querySelector('.view-btn.active');
+      const view = viewBtnActivo ? viewBtnActivo.dataset.view : 'front';
+
+      const key = `${view}-${color}`;
+      const src = media.dataset[key];
+      if (src) img.src = src;
+    });
+    btn.__colorBinded = true;
+  });
+}
+
+// Inicializar al cargar
+window.addEventListener('load', inicializarInteraccionesCatalogo);

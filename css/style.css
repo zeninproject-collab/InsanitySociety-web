@@ -328,6 +328,16 @@ h1, h2, h3 {
 .col-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.45); }
 .col-card h3 { margin-bottom: .25rem; }
 .col-card p { color: var(--muted); }
+.col-card .jb-cta { display:inline-block; margin-top: .6rem; }
+/* Hacer el botón claramente visible en la tarjeta */
+.col-card .jb-cta {
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+  border: 1px solid #2a2a2a;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  font-weight: 800;
+}
+.col-card .jb-cta:hover { box-shadow: 0 6px 14px rgba(229,9,20,0.35); filter: brightness(1.03); }
 
 .col-story.raijin { background-image: radial-gradient(800px 260px at 120% -10%, rgba(229,9,20,0.18), transparent 40%), linear-gradient(180deg, #141414, #1a1a1a); }
 .col-pilar.conqueror { background-image: radial-gradient(800px 260px at -20% 120%, rgba(255,255,255,0.06), transparent 40%), linear-gradient(180deg, #151515, #111); }
@@ -343,6 +353,8 @@ h1, h2, h3 {
   gap: 2rem;
 }
 
+.catalogo-titulo { margin: 0.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
 .card {
   background: #1c1c1c;
   border: 1px solid #232323;
@@ -353,6 +365,27 @@ h1, h2, h3 {
   overflow: hidden;
 }
 
+/* Controles de previsualización (vista y color) */
+.product-media { position: relative; }
+.view-toggle, .color-toggle {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: .5rem;
+}
+.view-btn, .color-btn {
+  background: #222;
+  border: 1px solid #444;
+  color: #fff;
+  padding: .35rem .6rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.view-btn.active, .color-btn.active { background: var(--accent); border-color: var(--accent); }
+
+.product-img { aspect-ratio: 1/1; object-fit: cover; background:#0a0a0a; }
+
 .card:hover {
   transform: translateY(-6px) scale(1.01);
   box-shadow: 0 12px 30px rgba(0,0,0,0.35);
@@ -361,7 +394,7 @@ h1, h2, h3 {
 .card img {
   width: 100%;
   border-radius: 10px;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.6rem;
   transition: transform 0.4s ease;
 }
 .card:hover img { transform: scale(1.06); }
