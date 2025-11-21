@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000"/>
+  <title>INSANITY POWER MEET 2025 — Insanity Society</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Oswald:wght@400;500;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { background: var(--bg, #0b0b0b); color: var(--text, #eaeaea); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+    .pm-header { text-align: center; margin-top: 90px; margin-bottom: 1rem; }
+    .pm-title { color: var(--accent, #e50914); letter-spacing: 1px; text-transform: uppercase; font-family: "Oswald", sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+    .pm-meta { color: var(--muted, #b3b3b3); margin-top: .25rem; }
+    .pm-media { border: 1px solid #232323; border-radius: 12px; overflow: hidden; background: #111; box-shadow: 0 18px 40px rgba(0,0,0,0.35); }
+    .pm-media video, .pm-media img { width: 100%; display: block; }
+    .pm-body { margin-top: 1rem; line-height: 1.8; color: #ddd; }
+    .pm-body p { margin-bottom: .85rem; }
+    .pm-actions { margin-top: 1rem; display: flex; gap: .5rem; justify-content: center; }
+    .pm-back { text-decoration: none; display: inline-block; padding: .6rem 1rem; border-radius: 8px; border: 1px solid #333; background: #1e1e1e; color: #fff; font-weight: 800; }
+    .pm-back:hover { color: var(--accent); border-color: var(--accent); }
+    .pm-hero { display:grid; gap: .75rem; grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .pm-hero { grid-template-columns: 1.6fr 1fr; align-items: stretch; } }
+    .pm-hero .pm-media { height: 100%; display: grid; }
+    .pm-hero .pm-media video { height: 100%; object-fit: cover; }
+    .pm-side { border: 1px solid #232323; border-radius: 12px; padding: 1rem; background: linear-gradient(180deg, #141414, #0f0f0f); }
+    .pm-side h3 { color: #fff; margin-bottom: .35rem; }
+    .pm-side p { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="pm-header">
+      <h1 class="pm-title">INSANITY POWER MEET 2025</h1>
+      <p class="pm-meta">21 de septiembre de 2025 · Bogotá, Colombia</p>
+    </header>
+
+    <section class="pm-hero">
+      <div class="pm-media">
+        <video controls playsinline poster="img/Insanity Power Meet 2025/medallas.jpg">
+          <source src="vid/Insanity Power Meet 2025.mp4" type="video/mp4" />
+          Tu navegador no soporta video HTML5.
+        </video>
+      </div>
+      <aside class="pm-side">
+        <h3>Resumen</h3>
+        <p>
+          El Insanity Power Meet 2025 no fue solo un evento, fue la prueba de lo que significa empujar más allá de los límites. Aquí no celebramos kilos levantados, sino la mentalidad indomable que se forja entre el dolor, el esfuerzo y la disciplina.
+        </p>
+        <p>
+          Gracias a cada atleta que dejó el alma en la tarima, y a nuestros patrocinadores que hicieron posible este encuentro de fuerza y hermandad. Este es el legado de Insanity Society: no se trata de vencer a otros, se trata de vencerte a ti mismo una y otra vez.
+        </p>
+      </aside>
+    </section>
+
+    <article class="pm-body">
+      <p>
+        El Insanity Power Meet 2025 no fue solo un evento, fue la prueba de lo que significa empujar más allá de los límites. Aquí no celebramos kilos levantados, sino la mentalidad indomable que se forja entre el dolor, el esfuerzo y la disciplina. Cada barra cargada fue un grito de lucha, cada levantamiento un recordatorio de que el verdadero poder nace en la mente antes que en los músculos.
+      </p>
+      <p>
+        Gracias a cada atleta que dejó el alma en la tarima, y a nuestros patrocinadores que hicieron posible este encuentro de fuerza y hermandad. Este es el legado de Insanity Society: no se trata de vencer a otros, se trata de vencerte a ti mismo una y otra vez.
+      </p>
+    </article>
+
+    <div class="pm-actions">
+      <a class="pm-back" href="index.html#blog">← Volver a Comunidad</a>
+    </div>
+  </div>
+</body>
+</html>
