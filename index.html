@@ -121,6 +121,13 @@
       <article class="col-card">
         <h3>RAIJIN</h3>
         <p>El Guerrero Rojo. Disciplina, concentración y fuerza interior; un legado que renace tras cada caída.</p>
+        <div class="raijin-legend" style="margin-top: .5rem; border-top: 1px solid #232323; padding-top: .5rem;">
+          <h4 style="margin: .25rem 0; color: var(--accent); letter-spacing: .6px;">Leyenda</h4>
+          <p style="color: var(--muted);">
+            En un cielo teñido de rojo, Raijin enfrenta sombras ancestrales hasta caer y renacer en luz carmesí. Su espíritu despierta un legado que marca a doce elegidos con el trueno del guerrero rojo. La batalla trasciende al héroe: no se lucha por gloria, sino por voluntad y equilibrio. Raijin no muere; vive en todo aquel que combate y jamás se rinde.
+          </p>
+          <a class="btn-primario raijin-btn" href="raijin.html" style="margin-top:.5rem; display:inline-block;">Leer la leyenda completa ⚡</a>
+        </div>
       </article>
       <article class="col-card">
         <h3>CLASSIC</h3>
@@ -192,21 +199,7 @@
       </article>
     </div>
 
-    <!-- Sección destacada: Raijin - El Guerrero Rojo -->
-    <section class="raijin-highlight fondo-grietas" aria-labelledby="raijin-title">
-      <div class="raijin-banner" role="img" aria-label="Raijin: El Guerrero Rojo"></div>
-      <div class="raijin-content">
-        <h3 id="raijin-title">Raijin – El Guerrero Rojo</h3>
-        <p class="raijin-sinopsis">
-          En un cielo teñido de rojo, Raijin enfrenta sombras ancestrales hasta caer y renacer en luz carmesí.
-          Su espíritu despierta un legado que marca a doce elegidos con el trueno del guerrero rojo.
-          La batalla trasciende al héroe: no se lucha por gloria, sino por voluntad y equilibrio.
-          Raijin no muere; vive en todo aquel que combate y jamás se rinde.
-        </p>
-        <a class="btn-primario raijin-btn" href="raijin.html">Leer la leyenda completa ⚡</a>
-      </div>
     </section>
-  </section>
 
   <!-- TIENDA: PRODUCTOS -->
   <section id="tienda" class="tab-content">
@@ -214,6 +207,42 @@
     <div class="section-intro">
       <p>Minimalista, agresiva y funcional. Fotografías oscuras, detalles metálicos, actitud sin concesiones.</p>
     </div>
+
+    <!-- Panel de filtros -->
+    <div class="filters-bar">
+      <button id="openFilters" class="btn-primario btn-filtros" aria-controls="filtersPanel" aria-expanded="false">⚙️ Filtros</button>
+      <button id="clearFilters" class="btn-secundario btn-limpiar" title="Limpiar filtros">Limpiar</button>
+    </div>
+    <aside id="filtersPanel" class="filters-panel hidden" aria-hidden="true">
+      <div class="filters-header">
+        <h3>Filtrar productos</h3>
+        <button id="closeFilters" class="filters-close" aria-label="Cerrar filtros">✖</button>
+      </div>
+      <div class="filters-content">
+        <div class="filter-group" data-group="categoria">
+          <h4>Categoría</h4>
+          <div class="filter-options" id="filtroCategoria"></div>
+        </div>
+        <div class="filter-group" data-group="coleccion">
+          <h4>Colección</h4>
+          <div class="filter-options" id="filtroColeccion"></div>
+        </div>
+        <div class="filter-group" data-group="talla">
+          <h4>Talla</h4>
+          <div class="filter-options" id="filtroTalla"></div>
+        </div>
+        <div class="filter-group" data-group="color">
+          <h4>Color</h4>
+          <div class="filter-options" id="filtroColor"></div>
+        </div>
+      </div>
+      <div class="filters-footer">
+        <button id="applyFilters" class="btn-primario">Aplicar</button>
+        <button id="resetFilters" class="btn-secundario">Reiniciar</button>
+      </div>
+    </aside>
+    <div id="filtersOverlay" class="filters-overlay hidden" aria-hidden="true"></div>
+    <p id="noResultados" class="no-resultados hidden">❌ No se encontraron productos con esos filtros.</p>
 
     <!-- Catálogo: KYO-KI 狂気 -->
     <h3 class="catalogo-titulo">Colección: KYO-KI 狂気</h3>

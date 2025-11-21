@@ -673,6 +673,18 @@ function inicializarInteraccionesCatalogo() {
   });
 
   // Vista pecho/espalda
+  // Asignación de rutas pecho/espalda por mapa (si existe)
+  document.querySelectorAll('.producto').forEach(card => {
+    const name = (card.querySelector('h3')?.textContent || '').trim();
+    if (PRODUCT_IMAGE_MAP[name]) {
+      const media = card.querySelector('.product-media');
+      if (media) {
+        media.dataset.front = PRODUCT_IMAGE_MAP[name].front;
+        media.dataset.back = PRODUCT_IMAGE_MAP[name].back;
+      }
+    }
+  });
+
   document.querySelectorAll('.producto .view-btn').forEach(btn => {
     if (btn.__viewBinded) return;
     btn.addEventListener('click', () => {
@@ -729,3 +741,250 @@ function inicializarInteraccionesCatalogo() {
 
 // Inicializar al cargar
 window.addEventListener('load', inicializarInteraccionesCatalogo);
+
+// ----------------------------
+// FILTROS DE TIENDA
+// ----------------------------
+(function initFiltros() {
+  const tienda = document.querySelector('#tienda');
+  if (!tienda) return;
+
+  const panel = document.querySelector('#filtersPanel');
+  const overlay = document.querySelector('#filtersOverlay');
+  const btnOpen = document.querySelector('#openFilters');
+  const btnClose = document.querySelector('#closeFilters');
+  const btnApply = document.querySelector('#applyFilters');
+  const btnReset = document.querySelector('#resetFilters');
+  const btnClear = document.querySelector('#clearFilters');
+  const noResultados = document.querySelector('#noResultados');
+
+  const contCategoria = document.querySelector('#filtroCategoria');
+  const contColeccion = document.querySelector('#filtroColeccion');
+  const contTalla = document.querySelector('#filtroTalla');
+  const contColor = document.querySelector('#filtroColor');
+
+  const productos = Array.from(tienda.querySelectorAll('.card.producto'));
+
+  // Mapa de imágenes por producto (opcional): permite definir rutas de pecho/espalda
+  // clave: texto exacto del h3 del producto
+  const PRODUCT_IMAGE_MAP = {
+    // Ejemplo:
+    // 'Camiseta Oversize KYO-KI': {
+    //   front: 'img/KYO-KI/camiseta-oversize/negro-frente.png',
+    //   back:  'img/KYO-KI/camiseta-oversize/negro-espalda.png'
+    // }
+  };
+
+  // Inferir y normalizar atributos de productos
+  const normaliza = (s) => (s || '').toString().trim().toLowerCase();
+  productos.forEach(prod => {
+    // Colección: ya existe en data-coleccion
+    const col = prod.getAttribute('data-coleccion');
+    if (col) prod.setAttribute('data-coleccion', col);
+
+    // Categoría: inferir por texto del h3 o párrafo
+    let categoria = 'camiseta';
+    const title = (prod.querySelector('h3')?.textContent || '').toLowerCase();
+    const ptxt = (prod.querySelector('p')?.textContent || '').toLowerCase();
+    if (title.includes('sudadera')) categoria = 'sudadera';
+    else if (title.includes('pantaloneta')) categoria = 'pantaloneta';
+    else if (title.includes('crop')) categoria = 'top';
+    else if (title.includes('short')) categoria = 'short';
+    else if (title.includes('compresión') || title.includes('compresion')) categoria = 'camiseta';
+    prod.setAttribute('data-categoria', categoria);
+
+    // Tallas: a partir de data-tallas del botón
+    const btn = prod.querySelector('.agregar-carrito');
+    const tallas = (btn?.dataset.tallas || '')
+      .split(',').map(t=>t.trim().toUpperCase()).filter(Boolean);
+    if (tallas.length) prod.setAttribute('data-tallas', tallas.join(','));
+
+    // Colores: buscar en el texto del párrafo principal
+    let colores = [];
+    const coloresTxt = ptxt.split('colores:')[1] || ptxt.split(' • ')[2] || '';
+    if (coloresTxt) {
+      colores = coloresTxt
+        .replace(/\.|\n/g,'')
+        .split(/[\/•,]/)
+        .map(c=>c.trim())
+        .filter(Boolean);
+    }
+    // Si no detecta, intenta por imagen (negro por defecto)
+    if (!colores.length) colores = ['negro'];
+    prod.setAttribute('data-colores', colores.join(','));
+  });
+
+  // Construir opciones únicas
+  const setCategorias = new Set();
+  const setColecciones = new Set();
+  const setTallas = new Set();
+  const setColores = new Set();
+
+  productos.forEach(prod => {
+    setCategorias.add(normaliza(prod.dataset.categoria));
+    setColecciones.add(prod.dataset.coleccion);
+    (prod.dataset.tallas || '').split(',').filter(Boolean).forEach(t => setTallas.add(t.toUpperCase()));
+    (prod.dataset.colores || '').split(',').filter(Boolean).forEach(c => setColores.add(normaliza(c)));
+  });
+
+  const crearChip = (name, value) => {
+    const id = `${name}-${value}`.replace(/\s+/g,'-').toLowerCase();
+    const label = document.createElement('label');
+    label.className = 'filter-chip';
+    label.setAttribute('for', id);
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = id;
+    input.name = name;
+    input.value = value;
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(' ' + value));
+    return label;
+  };
+
+  // Poblar contenedores (inicial)
+  function renderOpciones({ cats, cols, tllas, colsColores }, keepChecked = true) {
+    const render = (cont, name, valores) => {
+      const checked = new Set(Array.from(cont.querySelectorAll('input[name="'+name+'"]:checked')).map(i=>i.value.toLowerCase()));
+      cont.innerHTML = '';
+      valores.forEach(v => {
+        const chip = crearChip(name, v);
+        if (keepChecked && checked.has(v.toLowerCase())) chip.querySelector('input').checked = true;
+        cont.appendChild(chip);
+      });
+    };
+    render(contCategoria, 'categoria', Array.from(cats).sort());
+    render(contColeccion, 'coleccion', Array.from(cols).sort());
+    render(contTalla, 'talla', Array.from(tllas).sort());
+    render(contColor, 'color', Array.from(colsColores).sort());
+  }
+  renderOpciones({ cats: setCategorias, cols: setColecciones, tllas: setTallas, colsColores: setColores });
+
+  // Estado de filtros
+  const filtros = { categoria: new Set(), coleccion: new Set(), talla: new Set(), color: new Set() };
+
+  function leerSeleccion() {
+    ['categoria','coleccion','talla','color'].forEach(key => {
+      filtros[key].clear();
+      tienda.querySelectorAll(`input[name="${key}"]:checked`).forEach(chk => filtros[key].add(normaliza(chk.value)));
+    });
+  }
+
+  function coincide(prod) {
+    const by = (key, valGetter) => {
+      if (!filtros[key].size) return true; // sin filtro en ese grupo
+      const val = valGetter();
+      if (Array.isArray(val)) {
+        return Array.from(filtros[key]).every(v => val.includes(v));
+      }
+      return filtros[key].has(normaliza(val));
+    };
+
+    const okCategoria = by('categoria', () => normaliza(prod.dataset.categoria));
+    const okColeccion = by('coleccion', () => prod.dataset.coleccion);
+    const okTalla = by('talla', () => (prod.dataset.tallas || '').split(',').map(t=>t.trim().toUpperCase()));
+    const okColor = by('color', () => (prod.dataset.colores || '').split(',').map(c=>normaliza(c)));
+
+    return okCategoria && okColeccion && okTalla && okColor;
+  }
+
+  function opcionesDisponibles() {
+    // Calcula opciones válidas restantes dado el estado actual de filtros (parciales)
+    const cats = new Set();
+    const cols = new Set();
+    const tllas = new Set();
+    const colsColores = new Set();
+
+    productos.forEach(prod => {
+      if (!coincide(prod)) return;
+      cats.add(prod.dataset.categoria.toLowerCase());
+      cols.add(prod.dataset.coleccion);
+      (prod.dataset.tallas || '').split(',').filter(Boolean).forEach(t => tllas.add(t.toUpperCase()));
+      (prod.dataset.colores || '').split(',').filter(Boolean).map(c=>c.toLowerCase()).forEach(c => colsColores.add(c));
+    });
+    return { cats, cols, tllas, colsColores };
+  }
+
+  function rebindCheckboxChange() {
+    tienda.querySelectorAll('#filtersPanel input[type="checkbox"]').forEach(chk => {
+      chk.addEventListener('change', () => {
+        aplicarFiltros(false);
+      }, { once: true });
+    });
+  }
+
+  function aplicarFiltros(closePanel = true) {
+    leerSeleccion();
+    let visibles = 0;
+    productos.forEach(prod => {
+      const show = coincide(prod);
+      prod.style.display = show ? '' : 'none';
+      if (show) visibles++;
+    });
+    if (noResultados) noResultados.classList.toggle('hidden', visibles !== 0);
+
+    // Ocultar/mostrar secciones (contenedor .productos) y su h3 previo según resultados
+    const secciones = tienda.querySelectorAll('.catalogo-titulo + .productos');
+    secciones.forEach(sec => {
+      const cards = Array.from(sec.querySelectorAll('.card.producto'));
+      const visiblesSec = cards.filter(c => c.style.display !== 'none');
+      const hayVisibles = visiblesSec.length > 0;
+      const titulo = sec.previousElementSibling && sec.previousElementSibling.matches('.catalogo-titulo') ? sec.previousElementSibling : null;
+      sec.style.display = hayVisibles ? '' : 'none';
+      if (titulo) titulo.style.display = hayVisibles ? '' : 'none';
+    });
+
+    // Recalcular opciones disponibles y re-render de checkboxes conservando los seleccionados
+    const disp = opcionesDisponibles();
+    renderOpciones(disp, true);
+    // Volver a enlazar eventos change a los inputs nuevos
+    rebindCheckboxChange();
+
+    if (closePanel) cerrarPanel();
+  }
+
+  function limpiarFiltrosUI() {
+    tienda.querySelectorAll('#filtersPanel input[type="checkbox"]').forEach(chk => chk.checked = false);
+  }
+
+  function abrirPanel() {
+    if (!panel || !overlay) return;
+    panel.classList.add('open');
+    panel.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+    panel.setAttribute('aria-hidden','false');
+    overlay.setAttribute('aria-hidden','false');
+    btnOpen?.setAttribute('aria-expanded','true');
+  }
+  function cerrarPanel() {
+    if (!panel || !overlay) return;
+    panel.classList.remove('open');
+    overlay.classList.add('hidden');
+    panel.setAttribute('aria-hidden','true');
+    overlay.setAttribute('aria-hidden','true');
+    btnOpen?.setAttribute('aria-expanded','false');
+  }
+
+  // Bindings
+  btnOpen?.addEventListener('click', (e)=>{ e.stopPropagation(); abrirPanel(); });
+  btnClose?.addEventListener('click', cerrarPanel);
+  overlay?.addEventListener('click', cerrarPanel);
+
+  // Click fuera del panel (desktop)
+  window.addEventListener('click', (e) => {
+    if (!panel || panel.classList.contains('hidden')) return;
+    const t = e.target;
+    if (panel.contains(t) || (btnOpen && btnOpen.contains(t))) return;
+    cerrarPanel();
+  });
+
+  btnApply?.addEventListener('click', () => { aplicarFiltros(true); });
+  btnReset?.addEventListener('click', () => { limpiarFiltrosUI(); aplicarFiltros(false); });
+  btnClear?.addEventListener('click', () => { limpiarFiltrosUI(); aplicarFiltros(false); });
+
+  // Respuesta inmediata en desktop y recalculo de disponibilidad
+  rebindCheckboxChange();
+
+  // Aplicar inicialmente sin filtros
+  aplicarFiltros(false);
+})();
